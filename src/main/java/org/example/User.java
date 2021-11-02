@@ -2,7 +2,6 @@ package org.example;
 
 public class User {
 
-    private Data data = new Data();
     public String userName;
     public int id;
     public double balance;
