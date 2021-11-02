@@ -5,22 +5,19 @@ import io.javalin.http.Context;
 public class UserController {
 
     public Data data = new Data();
+    public UserService userService = new UserService();
 
-    public double getUserBalance(Context ctx){
+    public void userController(Context ctx){
         try {
             int id = Integer.parseInt(ctx.queryParam("id"));
-            User user = new User(id,
-                    data.getUserName(id),
-                    data.getBalance(id));
-            if (user.userName.equals("")){
+            if (userService.getName(id).equals("")){
                 ctx.json("Wrong id");
             }else {
-                ctx.result(String.format("{\"balance:\" \"%.2f\"}", user.balance));
+                ctx.result(String.format("{\"balance:\" \"%.2f\"}", userService.getUserBalance(id)));
             }
         }
         catch (NumberFormatException e) {
             ctx.redirect("/", 400);
         }
-        return 0;
     }
 }

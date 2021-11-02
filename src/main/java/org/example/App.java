@@ -11,7 +11,7 @@ public class App {
         Javalin javalin = Javalin.create().start(3022);
 
         javalin.get("/userBalance", ctx ->{
-            userController.getUserBalance(ctx);
+            userController.userController(ctx);
         });
     }
 }
