@@ -2,12 +2,8 @@ package org.example;
 
 import io.javalin.Javalin;
 
-import javax.servlet.http.HttpServletRequest;
-
 public class App {
     public static Data data = new Data();
-
-    public static HttpServletRequest request;
 
     public static void main( String[] args )
     {
@@ -42,8 +38,8 @@ public class App {
             System.out.println(ctx.formParam("login"));
             System.out.println(ctx.formParam("pass"));
             System.out.println(ctx.formParam("repass"));
-            String login = ctx.formParam("login");
-            String pass = ctx.formParam("pass");
+            String login = ctx.formParam("login").replaceAll("\\s","");
+            String pass = ctx.formParam("pass").replaceAll("\\s","");
             String repass = ctx.formParam("repass");
             data.connect(login);
             if (data.register(login, pass, repass) == true){
@@ -51,14 +47,25 @@ public class App {
                 ctx.cookie("login", login);
                 ctx.redirect("/home");
             }else {
+                ctx.redirect("/", 400);
                 System.out.println("BAD");
             }
         });
-        javalin.get("/userBalance?id=user_id", ctx -> {
-            User user = new User(Integer.valueOf(request.getParameter("id")),
-                    data.getUserName(Integer.valueOf(request.getParameter("id"))),
-                    data.getBalance(Integer.valueOf(request.getParameter("id"))));
-            ctx.json(user.id);
+        javalin.get("/userBalance", ctx ->{
+            try {
+                int id = Integer.parseInt(ctx.queryParam("id"));
+                User user = new User(id,
+                    data.getUserName(id),
+                    data.getBalance(id));
+                if (user.userName == ""){
+                    ctx.json("Wrong id");
+                }else {
+                    ctx.result(String.format("{\"balance:\" \"%.2f\"}", user.balance));
+                }
+            }
+            catch (NumberFormatException e) {
+                ctx.redirect("/", 400);
+            }
         });
     }
 }
