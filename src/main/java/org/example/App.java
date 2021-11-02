@@ -54,5 +54,11 @@ public class App {
                 System.out.println("BAD");
             }
         });
+        javalin.get("/userBalance?id=user_id", ctx -> {
+            User user = new User(Integer.valueOf(request.getParameter("id")),
+                    data.getUserName(Integer.valueOf(request.getParameter("id"))),
+                    data.getBalance(Integer.valueOf(request.getParameter("id"))));
+            ctx.json(user.id);
+        });
     }
 }
