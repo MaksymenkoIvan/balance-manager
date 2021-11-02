@@ -4,7 +4,6 @@ import io.javalin.http.Context;
 
 public class UserController {
 
-    public Data data = new Data();
     public UserService userService = new UserService();
 
     public void userController(Context ctx){
@@ -16,7 +15,7 @@ public class UserController {
                 ctx.result(String.format("{\"balance:\" \"%.2f\"}", userService.getUserBalance(id)));
             }
         }
-        catch (NumberFormatException e) {
+        catch (Exception e) {
             ctx.redirect("/", 400);
         }
     }
